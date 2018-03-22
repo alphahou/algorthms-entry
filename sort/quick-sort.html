@@ -6,7 +6,7 @@
 <body>
 	
 	<script>
-var cnt=0
+		var cnt=0
 		function draw(array,x,y){
 			cnt++
 			var canvas = document.createElement('canvas'),
@@ -37,26 +37,39 @@ var cnt=0
 			document.body.appendChild(canvas)
 			document.body.appendChild(count)
 		}
-		function sort(array){
-			var h=1
-			l=array.length
-			
-			while(h<l/3){
-				h=h*3+1
-			}
-			while(h>=1){
-				for (let i = h; i <l; i++) {
-					for (let j = i ; j>=h&&(array[j]<array[j-h]); j-=h) {
-						let temp=array[j]
-						array[j]=array[j-h]
-						array[j-h]=temp;
-						
-						draw(array,j,j-h)
+		function exch(array,a,b){
+			draw(array,a,b)
+			var temp=array[a]
+			array[a]=array[b]
+			array[b]=temp
+		}
+		function partition(array,lo,hi){
+			var i=lo,
+				j=hi+1,
+				v=array[lo]
+			while(true){
+				while(array[++i]<v){
+					if(i==hi){
+						break
 					}
-
 				}
-				h=Math.floor(h/3)
+				while(array[--j]>v){
+				}
+				if(i>=j){
+					break
+				}
+				exch(array,i,j)
 			}
+			exch(array,j,lo)
+			return j
+		}
+		function sort(array,lo,hi){
+			if(hi<=lo){
+				return
+			}
+			var j= partition(array,lo,hi)
+			sort(array,lo,j-1)
+			sort(array,j+1,hi)
 		}
 		function createRandArray(length){
 			var array=[]
@@ -68,11 +81,11 @@ var cnt=0
 			return array
 		}
 		window.onload=function(){ 
-				var len=20,
-					arr=createRandArray(len)
-				sort(arr,0,len-1) 
-			} 
-
+			var len=100,
+				arr=createRandArray(len)
+			sort(arr,0,len-1) 
+			draw(arr)
+		} 
 	</script>
 </body>
 </html>
