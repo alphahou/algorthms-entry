@@ -43,15 +43,26 @@
 			array[a]=array[b]
 			array[b]=temp
 		}
+		function largest(array){
+			var l=array.length,
+				temp=array[0]
+				index=0
+			for (var i = 1; i <l; i++) {
+				if(array[i]>temp){
+					temp=array[i]
+					index=i
+				}
+				if(index!=(l-1)){
+					exch(array,index,l-1)
+				}
+			}
+		}
 		function partition(array,lo,hi){
 			var i=lo,
 				j=hi+1,
 				v=array[lo]
 			while(true){
 				while(array[++i]<v){
-					if(i==hi){
-						break
-					}
 				}
 				while(array[--j]>v){
 				}
@@ -64,7 +75,7 @@
 			return j
 		}
 		function sort(array,lo,hi){
-			if(hi<=lo){
+			if(hi<=lo){//小于某个数值时可以使用插入排序
 				return
 			}
 			var j= partition(array,lo,hi)
@@ -83,6 +94,7 @@
 		window.onload=function(){ 
 			var len=100,
 				arr=createRandArray(len)
+			largest(arr)//添加哨兵，删去边界检查
 			sort(arr,0,len-1) 
 			draw(arr)
 		} 

@@ -50,12 +50,12 @@
 			}
 			var i=lo+1,
 				lt=lo,
-				v=array[lo],
+				v=array[lo],//这里的v最后会成为中间的重复段
 				gt=hi
 			while(i<=gt){
 				let current=array[i]
 				if(current<v){
-					exch(array,i++,lt++)
+					exch(array,i++,lt++)//这里相当于把中间重复段右移，i加入左边
 				}
 				else if(current>v){
 					exch(array,i,gt--)

@@ -6,7 +6,7 @@
 <body>
 	
 	<script>
-var cnt=0
+		var cnt=0
 		function draw(array,x,y){
 			cnt++
 			var canvas = document.createElement('canvas'),
@@ -37,24 +37,34 @@ var cnt=0
 			document.body.appendChild(canvas)
 			document.body.appendChild(count)
 		}
-		function sort(array){
-			var h=1
-			l=array.length
+		function sink(array,i,len){
 			
-			while(h<l/3){
-				h=h*3+1
-			}
-			while(h>=1){
-				for (let i = h; i <l; i++) {
-					for (let j = i ; j>=h&&(array[j]<array[j-h]); j-=h) {
-						draw(array,j,j-h)
-						let temp=array[j]
-						array[j]=array[j-h]
-						array[j-h]=temp;
-					}
-
+			while(2*i+1<=len){
+				var j=2*i+1
+				if(j<len&&array[j]<array[j+1]){//因为j成为子堆中较大的那个
+					j++
 				}
-				h=Math.floor(h/3)
+				if(array[j]<array[i]){//所以这里只需要判断i是否大于j
+					break
+				}
+				exch(array,i,j)
+				i=j
+			}
+		}
+		function exch(array,a,b){
+			draw(array,a,b)
+			var temp=array[a]
+			array[a]=array[b]
+			array[b]=temp
+		}
+		function sort(array){
+			var l= array.length-1
+			for(var i=Math.floor(l/2);i>-1;i--){
+				sink(array,i,l)
+			}
+			while(l>0){
+				exch(array,0,l--)
+				sink(array,0,l)
 			}
 		}
 		function createRandArray(length){
@@ -67,11 +77,11 @@ var cnt=0
 			return array
 		}
 		window.onload=function(){ 
-				var len=100,
-					arr=createRandArray(len)
-				sort(arr,0,len-1) 
-				draw(array)
-			} 
+			var len=20,
+				arr=createRandArray(len)
+			sort(arr)
+			draw(arr)
+		} 
 	</script>
 </body>
 </html>
