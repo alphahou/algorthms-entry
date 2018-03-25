@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+</head>
+<body>
+	
+	<script>
+		var cnt=0
+		function draw(array,x,y){
+			cnt++
+			var canvas = document.createElement('canvas'),
+				count=document.createElement('div'),
+				ctx=canvas.getContext('2d'),
+				l=array.length,
+				gap=10,
+				w=7,
+				a=x+1||-1,
+				b=y+1||-1
+			a-=1
+			b-=1
+			canvas.setAttribute('height','200')
+			canvas.setAttribute('width',''+l*10)
+			canvas.style.display='block'
+			canvas.style.margin='auto'
+			count.innerText=cnt
+			count.style.textAlign='center'
+			for (let i = 0; i < l; i++) {
+				if(i!=a&&i!=b){
+					ctx.fillStyle='pink'
+				}
+				else {
+					ctx.fillStyle='black'
+				}
+				ctx.fillRect(0+gap*i,200,w,-array[i]*100)
+			}
+			document.body.appendChild(canvas)
+			document.body.appendChild(count)
+		}
+		function exch(array,a,b){
+			draw(array,a,b)
+			var temp=array[a]
+			array[a]=array[b]
+			array[b]=temp
+		}
+		
+		function partition(array,lo,hi){
+			var i=lo,
+				j=hi+1,
+				v=array[lo]
+			while(true){
+				while(array[++i]<v){
+				}
+				while(array[--j]>v){
+				}
+				if(i>=j){
+					break
+				}
+				exch(array,i,j)
+			}
+			exch(array,j,lo)
+			return j
+		}
+		function select(array,k){
+			var lo=0,
+				hi=array.length-1
+			while(hi>lo){
+				var j=partition(array,lo,hi)
+				if(j==k){
+					return array[k]
+				}
+				if(j<k){
+					lo=j+1
+				}
+				if(j>k){
+					hi=j-1
+				}
+			}
+			return array[k]
+		}
+		function createRandArray(length){
+			var array=[]
+			while(length>0){
+				array.push(Math.random())
+				length--
+			}
+			draw(array)
+			return array
+		}
+		window.onload=function(){ 
+			var len=10,
+				arr=createRandArray(len),
+				k=4
+			select(arr,k)
+			draw(arr)
+		} 
+	</script>
+</body>
+</html>
