@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+</head>
+<body>
+	
+	<script>
+		var cnt=0
+		function drawNode(ctx,node){
+			
+		}
+		function draw(bst){
+			cnt++
+			var canvas = document.createElement('canvas'),
+				count=document.createElement('div'),
+				ctx=canvas.getContext('2d'),
+				l=bst.root.left.size()
+				r=bst.root.right.size()
+				w=l+r
+				h=l>r?l:r
+			canvas.setAttribute('height',''+h*20)
+			canvas.setAttribute('width',''+w*20)
+			canvas.style.display='block'
+			canvas.style.margin='auto'
+			count.innerText=cnt
+			count.style.textAlign='center'
+			for (let i = 0; i < l; i++) {
+				if(i!=a&&i!=b){
+					ctx.fillStyle='pink'
+				}
+				else {
+					ctx.fillStyle='black'
+				}
+				ctx.fillRect(0+gap*i,200,w,-array[i]*100)
+			}
+			document.body.appendChild(canvas)
+			document.body.appendChild(count)
+		}
+		class Node{
+			constructor(key,val,N){
+				this.key=key
+				this.val=val
+				this.N=N
+				this.left=null
+				this.right=null
+			}
+		}
+		class BST{
+			constructor(node){
+				this.root=node
+			}
+			size(n){
+				return n==null?0:n.N
+			}
+			get(key){
+				return this.search(key,this.root)
+			}
+			search(key,node){
+				if(node==null){
+					return null
+				}
+				if(n.key>key){
+					this.search(key,n.left)
+				}
+				else if(n.key<key){
+					this.search(key,n.right)
+				}
+				else {
+					return n.val
+				}
+			}
+			put(key,val){
+				this.root=this.putt(this.root,key,val)
+			}
+			putt(node,key,val){
+				if(node==null){
+					return new Node(key,val,1)//没有该节点
+				}
+				if(key>node.key){
+					node.right=this.putt(node.right,key,val)
+				}
+				else if(key<node.key){
+					node.left=this.putt(node.left,key,val)
+				}
+				else {
+					node.val=val//有该节点，更新
+				}
+				node.N=this.size(node.left)+this.size(node.right)+1//返回后会执行这段代码，依次从新添加节点的根节点开始增加N
+				return node
+			}
+			min(){
+				return this.min1(this.root)
+			}
+			min1(node){
+				if(node.left!=null){
+					return this.min1(node.left)
+				}
+				return node
+			}
+			select(k){
+				return this.select1(this.root,k).key
+			}
+			select1(node,k){
+				if(node==null){
+					return null
+				}
+				var t=this.size(node.left)
+				if(k<t){
+					return this.select1(node.left,k)
+				}
+				else if(k>t){
+					return  this.select1(node.right,k-t-1)
+				}
+				else {
+					return node
+				}
+			}
+			rank(key){
+				return this.rank1(this.root,key)
+			}
+			rank1(node,key){
+				if(node==null){
+					return null
+				}
+				if(node.key>key){
+					return rank1(node.left,key)
+				}
+				else if(node.key<key){
+					return this.size(node.left)+1+this.rank1(node.right,key)
+				}
+				else {
+					return this.size(node.left)
+				}
+			}
+			floor(key){
+				var f=this.floor1(this.root,key)
+				return f?f.key:null
+			}
+			floor1(node,key){
+				if(node==null){
+					return null
+				}
+				var k = node.key
+				if(key<k){
+					return this.floor1(node.left,key)
+				}
+				else if(key==k){
+					return node
+				}
+				else {
+					var right=this.floor1(node.right,key)
+					return right||node
+				}
+			}
+			delMin(){
+				this.root=this.delMin1(this.root)
+			}
+			delMin1(node){
+				if(node.left==null){
+					return node.right
+				}
+				node.left=this.delMin1(node.left)
+				node.N--
+				return node
+			}
+			delete(key){
+				this.root=this.delete1(this.root,key)
+			}
+			delete1(node,key){
+				if(node==null){
+					return null
+				}
+				if(node.key>key){
+					node.left=this.delete1(node.left,key)
+				}
+				else if(node.key<key){
+					node.right=this.delete1(node.right,key)
+				}
+				else {
+					if(node.left==null){
+						return node.right
+					}
+					if(node.right==null){
+						return node.left
+					}
+					var x=node
+					node=this.min1(x.right)
+					node.right=this.delMin1(x.right)
+					node.left=x.left
+				}
+				node.N=this.size(node.right)+this.size(node.left)+1
+				return node
+			}
+		}
+		var root=new Node(2,'b',1)
+		var b=new BST(root)
+		b.put(3,'c',1)
+		b.put(1,'a',1)
+		b.delete(2)
+		console.log(b)
+	</script>
+</body>
+</html>
