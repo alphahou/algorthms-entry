@@ -7,41 +7,53 @@
 	
 	<script>
 		var cnt=0
-		function drawNode(ctx,node){
-			
+		function drawNode(ctx,node,x,y,a,b){
+			var p=x>a?7:-7
+			ctx.beginPath()
+			ctx.moveTo(a+p,b+7)
+			ctx.lineTo(x-p,y-7)
+			ctx.stroke()
+			ctx.beginPath()
+			ctx.arc(x,y,10,0,2 * Math.PI)
+			ctx.stroke()
+			ctx.font = "10px serif"
+			ctx.fillText(node.key, x-5, y+3)
 		}
+		function draw1(ctx,node,x,y,a,b,n){
+				if(node==null){
+					return
+				}
+				var cell=20
+				if(n>0){
+					cell=n*cell
+				}
+				n--
+				draw1(ctx,node.left,x-cell,y+cell,x,y,n)
+				drawNode(ctx,node,x,y,a,b)
+				draw1(ctx,node.right,x+cell,y+cell,x,y,n)
+			}
 		function draw(bst){
 			cnt++
 			var canvas = document.createElement('canvas'),
 				count=document.createElement('div'),
 				ctx=canvas.getContext('2d'),
-				l=bst.root.left.size()
-				r=bst.root.right.size()
-				w=l+r
-				h=l>r?l:r
-			canvas.setAttribute('height',''+h*20)
-			canvas.setAttribute('width',''+w*20)
+				n=bst.size(bst.root)
+				h=bst.height()
+			canvas.setAttribute('height',''+h*40)
+			canvas.setAttribute('width',''+1000)
 			canvas.style.display='block'
 			canvas.style.margin='auto'
 			count.innerText=cnt
 			count.style.textAlign='center'
-			for (let i = 0; i < l; i++) {
-				if(i!=a&&i!=b){
-					ctx.fillStyle='pink'
-				}
-				else {
-					ctx.fillStyle='black'
-				}
-				ctx.fillRect(0+gap*i,200,w,-array[i]*100)
-			}
+			draw1(ctx,bst.root,500,10,500+13,10-13,4)
 			document.body.appendChild(canvas)
 			document.body.appendChild(count)
 		}
 		class Node{
-			constructor(key,val,N){
+			constructor(key,val){
 				this.key=key
 				this.val=val
-				this.N=N
+				this.N=1
 				this.left=null
 				this.right=null
 			}
@@ -57,25 +69,37 @@
 				return this.search(key,this.root)
 			}
 			search(key,node){
-				if(node==null){
-					return null
+				// if(node==null){
+				// 	return null
+				// }
+				// if(n.key>key){
+				// 	this.search(key,n.left)
+				// }
+				// else if(n.key<key){
+				// 	this.search(key,n.right)
+				// }
+				// else {
+				// 	return n.val
+				// }
+				while(node!=null){
+					if(node.key>key){
+						node=node.left
+					}
+					else if(node.key<key){
+						node=node.right
+					}
+					else {
+						return node.val
+					}
 				}
-				if(n.key>key){
-					this.search(key,n.left)
-				}
-				else if(n.key<key){
-					this.search(key,n.right)
-				}
-				else {
-					return n.val
-				}
+				return null
 			}
 			put(key,val){
 				this.root=this.putt(this.root,key,val)
 			}
 			putt(node,key,val){
 				if(node==null){
-					return new Node(key,val,1)//没有该节点
+					return new Node(key,val)//没有该节点
 				}
 				if(key>node.key){
 					node.right=this.putt(node.right,key,val)
@@ -153,6 +177,18 @@
 					return right||node
 				}
 			}
+			height(){
+				return this.height1(this.root)
+			}
+			height1(node){
+				if(node==null){
+					return null
+				}
+				var left=this.height1(node.left)
+				var right=this.height1(node.right)
+				var h=left>right?left+1:right+1
+				return h
+			}
 			delMin(){
 				this.root=this.delMin1(this.root)
 			}
@@ -192,13 +228,53 @@
 				node.N=this.size(node.right)+this.size(node.left)+1
 				return node
 			}
+			print(){
+				this.print1(this.root)
+			}
+			print1(node){
+				if(node==null){
+					return
+				}
+				this.print1(node.left)
+				console.log(node.key)
+				this.print1(node.right)
+			}
+			
+			keys(lo,hi){
+				var arr=[]
+				this.keys1(this.root,arr,lo,hi)
+				return arr
+			}
+			keys1(node,arr,lo,hi){
+				if(node==null){
+					return
+				}
+				var key=node.key
+				if(key<lo){
+					this.keys1(node.right,arr,lo,hi)
+				}
+				if(hi>=key&&key>=lo){
+					arr.push(node.key)
+				}
+				if(key>hi){
+					this.keys1(node.left,arr,lo,hi)
+				}
+			}
 		}
-		var root=new Node(2,'b',1)
-		var b=new BST(root)
-		b.put(3,'c',1)
-		b.put(1,'a',1)
-		b.delete(2)
-		console.log(b)
+		function createRandomBst(len){
+			var root=new Node(Math.floor(Math.random()*100),'d')
+			var bst=new BST(root)
+			for (var i = 0; i < len; i++) {
+				bst.put(Math.floor(Math.random()*100),'a')
+			}
+			return bst
+		}
+		window.onload=function(){
+			var bst=createRandomBst(20)
+			draw(bst)
+			bst.print()
+			console.log(bst.height())
+		}
 	</script>
 </body>
 </html>
