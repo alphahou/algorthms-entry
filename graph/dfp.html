@@ -6,22 +6,23 @@
 </head>
 <body>
 	<script>
-		class graph{
+		class Graph{
 			constructor(v,arr){
 				this.v=v
-				this.adj=[]
+				this.a=[]
 				this.e=0
 				for(var x=0;x<v;x++){
-					this.adj[x]=[]
+					this.a[x]=[]
 				}
 				var l=arr.length
-				for(var i=0,i<l;i+=2){
-					this.adj[arr[i]]=arr[i+1]
+				for(var i=0;i<l;i+=2){
+					this.a[arr[i]].push(arr[i+1])
+					this.a[arr[i+1]].push(arr[i])
 					this.e++
 				}
 			}
 			adj(v){
-				return this.adj[v]
+				return this.a[v]
 			}
 
 		}
@@ -40,18 +41,27 @@
 						path.push(this.edgeTo[i])
 					}
 				}
+				path.push(this.s)
 				return path
 			}
 			dfp(graph,v){
 				this.marked[v]=true
-				for(var x of graph.edge(v)){
-					this.edgeTo[x]=v
-					this.dfp(graph,x)
+				for(var x of graph.adj(v)){
+					if(!this.marked[x]){
+						this.edgeTo[x]=v
+						this.dfp(graph,x)
+					}
+					
 				}
 				
 			}
 
 		}
+		var arr=[1,2,2,0,0,1,0,3,3,4]
+		var g=new Graph(5,arr)
+		var d=new DeepFirstPaths(g,4)
+		console.log(d.pathTo(1),d.edgeTo)
+
 	</script>
 </body>
 </html>
